@@ -10,7 +10,7 @@ internal class ItemAdapter(
     private val items: List<Item>,
     private val listener: ItemAdapterListener,
     selectedPosition: Int,
-    private val currentProgress: Int
+    private var currentProgress: Int
 ) :
     RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
 
@@ -43,6 +43,8 @@ internal class ItemAdapter(
             } else {
                 // Otherwise, remove the highlight.
                 onUnClicked()
+                // Reset progress
+                currentProgress = 0
             }
         }
     }
