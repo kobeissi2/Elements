@@ -73,6 +73,7 @@ class MainViewModel : ViewModel() {
      */
     fun onItemSelected(position: Int) {
         selectedItemPosition = position
+        currentProgress = 0
     }
 
     /**

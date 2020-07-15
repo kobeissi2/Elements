@@ -85,6 +85,7 @@ class ItemView(context: Context, private val listener: ItemListener) : LinearLay
         }
         progressAnimation.cancel()
         progressAnimation.removeAllUpdateListeners()
+        progress = 0
     }
 
     /**
