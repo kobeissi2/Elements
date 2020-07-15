@@ -25,6 +25,7 @@
 
     </com.google.android.material.appbar.MaterialToolbar>
 
+    <!-- LinearLayoutManager width is broken on some later Android releases. Fastest "fix" is to use GridLayoutManager with a spanCount of 1. -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/main_left_recycler_view"
         android:layout_width="0dp"
@@ -49,6 +50,7 @@
         app:layout_constraintStart_toEndOf="@id/main_left_recycler_view"
         app:layout_constraintTop_toTopOf="@id/main_left_recycler_view" />
 
+    <!-- LinearLayoutManager width is broken on some later Android releases. Fastest "fix" is to use GridLayoutManager with a spanCount of 1. -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/main_right_recycler_view"
         android:layout_width="0dp"

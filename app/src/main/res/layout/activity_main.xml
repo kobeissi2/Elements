@@ -48,6 +48,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="start">
 
+        <!-- LinearLayoutManager width is broken on some later Android releases. Fastest "fix" is to use GridLayoutManager with a spanCount of 1. -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/main_left_recycler_view"
             android:layout_width="match_parent"
