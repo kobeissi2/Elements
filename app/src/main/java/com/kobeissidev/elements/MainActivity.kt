@@ -3,6 +3,7 @@ package com.kobeissidev.elements
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
@@ -126,6 +127,8 @@ class MainActivity : AppCompatActivity(), ElementAdapter.ElementListener, ItemAd
      * Handle the element being selected in the left RecyclerView.
      */
     override fun onElementSelected(element: Element, position: Int) {
+        // Hide the intro if visible
+        findViewById<MaterialTextView>(R.id.main_intro_text_view)?.visibility = View.GONE
         // Prevent clicking the same element logic.
         if (position != viewModel.selectedElementPosition) {
             // Cache the position of the selected element.

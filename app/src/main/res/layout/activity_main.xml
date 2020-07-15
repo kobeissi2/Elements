@@ -32,6 +32,15 @@
 
         </com.google.android.material.appbar.MaterialToolbar>
 
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/main_intro_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/intro"
+            android:textAlignment="center"
+            android:textColor="@color/colorTextPrimary"
+            android:textSize="24sp" />
+
         <!-- LinearLayoutManager width is broken on some later Android releases. Fastest "fix" is to use GridLayoutManager with a spanCount of 1. -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/main_right_recycler_view"
