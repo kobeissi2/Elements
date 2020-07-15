@@ -1,4 +1,4 @@
-package com.kobeissidev.elements.model
+package com.kobeissidev.elements.element.model
 
 data class Element(
     val name: String,

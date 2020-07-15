@@ -3,7 +3,6 @@ package com.kobeissidev.elements
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.Gravity
 import android.view.MenuItem
 import android.view.ViewGroup
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -13,8 +12,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.textview.MaterialTextView
-import com.kobeissidev.elements.model.Element
-import com.kobeissidev.elements.model.Item
+import com.kobeissidev.elements.element.ElementAdapter
+import com.kobeissidev.elements.element.model.Element
+import com.kobeissidev.elements.element.model.Item
 
 class MainActivity : AppCompatActivity() {
 
@@ -89,19 +89,5 @@ class MainActivity : AppCompatActivity() {
         elements.find { it.name == menuItem.title }?.let {
             findViewById<RecyclerView>(R.id.main_recycler_view).adapter = ElementAdapter(it.items)
         }
-    }
-
-    private inner class ElementAdapter(private val items: List<Item>) :
-        RecyclerView.Adapter<ElementAdapter.ElementViewHolder>() {
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ElementViewHolder()
-
-        override fun getItemCount() = items.size
-
-        override fun onBindViewHolder(holder: ElementViewHolder, position: Int) {
-            (holder.itemView as MaterialTextView).text = items[position].name
-        }
-
-        inner class ElementViewHolder : RecyclerView.ViewHolder(MaterialTextView(this@MainActivity))
     }
 }
