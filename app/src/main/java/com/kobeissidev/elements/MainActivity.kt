@@ -3,6 +3,9 @@ package com.kobeissidev.elements
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
@@ -10,7 +13,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.navigation.NavigationView
+import com.google.android.material.textview.MaterialTextView
 import com.kobeissidev.elements.adapter.ElementAdapter
 import com.kobeissidev.elements.adapter.ItemAdapter
 import com.kobeissidev.elements.element.model.Element
@@ -46,8 +49,13 @@ class MainActivity : AppCompatActivity(), ElementAdapter.ElementListener, ItemAd
             it.setHomeButtonEnabled(isPortrait)
         }
 
-        setUpPortrait()
-        setUpLandscape()
+        drawerLayout = findViewById(R.id.main_drawer_layout)
+        toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_drawer, R.string.close_drawer)
+        drawerLayout?.addDrawerListener(toggle!!)
+
+        leftRecyclerView = findViewById<RecyclerView>(R.id.main_left_recycler_view).also {
+            it.adapter = ElementAdapter(elements, this, viewModel.selectedElementPosition)
+        }
     }
 
     override fun onBackPressed() {
@@ -60,61 +68,34 @@ class MainActivity : AppCompatActivity(), ElementAdapter.ElementListener, ItemAd
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
-        toggle?.syncState()
+        if (isPortrait) {
+            toggle?.syncState()
+        }
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        toggle?.onConfigurationChanged(newConfig)
+        if (isPortrait) {
+            toggle?.onConfigurationChanged(newConfig)
+        }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem) = if (toggle?.onOptionsItemSelected(item) == true) {
-        true
-    } else {
-        super.onOptionsItemSelected(item)
-    }
+    override fun onOptionsItemSelected(item: MenuItem) =
+        if (isPortrait && toggle?.onOptionsItemSelected(item) == true) {
+            true
+        } else {
+            super.onOptionsItemSelected(item)
+        }
 
     override fun onElementSelected(element: Element, position: Int) {
         viewModel.onElementSelected(position)
         toolbar.title = element.name
-        rightRecyclerView?.adapter = ItemAdapter(element.items, this, viewModel.selectedItemPosition)
+        rightRecyclerView?.let {
+            it.adapter = ItemAdapter(element.items, this, viewModel.selectedItemPosition)
+            it.smoothScrollToPosition(0)
+        }
+        drawerLayout?.closeDrawer(GravityCompat.START)
     }
 
     override fun onItemSelected(position: Int) = viewModel.onItemSelected(position)
-
-    private fun setUpPortrait() {
-        if (isPortrait) {
-            drawerLayout = findViewById(R.id.main_drawer_layout)
-            toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_drawer, R.string.close_drawer)
-            drawerLayout?.addDrawerListener(toggle!!)
-
-            findViewById<NavigationView>(R.id.main_navigation_view).run {
-                // Add new submenu for the navigation view
-                menu.addSubMenu(getString(R.string.sub_menu)).also {
-                    // Loop through all of the elements and add them to the menu
-                    elements.forEach { element -> it.add(element.name) }
-                }
-                setNavigationItemSelectedListener { menuItem ->
-                    toolbar.title = menuItem.title
-                    elements.find { it.name == menuItem.title }?.let {
-                        rightRecyclerView?.adapter =
-                            ItemAdapter(it.items, this@MainActivity, viewModel.selectedItemPosition)
-                    }
-                    //drawerLayout!!.closeDrawer(GravityCompat.START)
-                    true
-                }
-                // Redraw the navigation view
-                invalidate()
-            }
-
-        }
-    }
-
-    private fun setUpLandscape() {
-        if (isPortrait.not()) {
-            leftRecyclerView = findViewById<RecyclerView>(R.id.main_left_recycler_view).also {
-                it.adapter = ElementAdapter(elements, this, viewModel.selectedElementPosition)
-            }
-        }
-    }
 }

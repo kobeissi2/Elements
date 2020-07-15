@@ -3,4 +3,5 @@
     <string name="sub_menu">Elements</string>
     <string name="open_drawer">Open</string>
     <string name="close_drawer">Close</string>
+    <string name="intro">Hello!\nOpen the hamburger menu to get started!</string>
 </resources>
