@@ -7,18 +7,18 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.textview.MaterialTextView
 import com.kobeissidev.elements.adapter.ElementAdapter
 import com.kobeissidev.elements.adapter.ItemAdapter
-import com.kobeissidev.elements.element.model.Element
-import com.kobeissidev.elements.element.model.Item
+import com.kobeissidev.elements.model.Element
 
 class MainActivity : AppCompatActivity(), ElementAdapter.ElementListener, ItemAdapter.ItemListener {
 
-    private lateinit var toolbar: MaterialToolbar
-
+    private var toolbar: MaterialToolbar? = null
     private var drawerLayout: DrawerLayout? = null
     private var toggle: ActionBarDrawerToggle? = null
     private var leftRecyclerView: RecyclerView? = null
@@ -27,18 +27,14 @@ class MainActivity : AppCompatActivity(), ElementAdapter.ElementListener, ItemAd
     private val isPortrait get() = resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
     private val viewModel by lazy { ViewModelProvider(this).get(MainViewModel::class.java) }
 
-    //TODO: Add elements
-    private val elements = listOf(
-        Element("Test", listOf(Item("Item"))),
-        Element("Test2", listOf(Item("Item"), Item("Item2")))
-    )
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        viewModel.fetchTopTags()
+
         toolbar = findViewById<MaterialToolbar>(R.id.main_toolbar).also { setSupportActionBar(it) }
-        rightRecyclerView = findViewById(R.id.main_right_recycler_view)
+
 
         supportActionBar?.let {
             it.setDisplayHomeAsUpEnabled(isPortrait)
@@ -49,9 +45,22 @@ class MainActivity : AppCompatActivity(), ElementAdapter.ElementListener, ItemAd
         toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_drawer, R.string.close_drawer)
         drawerLayout?.addDrawerListener(toggle!!)
 
-        leftRecyclerView = findViewById<RecyclerView>(R.id.main_left_recycler_view).also {
-            it.adapter = ElementAdapter(elements, this, viewModel.selectedElementPosition)
-        }
+
+        viewModel.topTagsList.observe(this, Observer { tags ->
+            viewModel.onReceivedTags(tags)
+            leftRecyclerView = findViewById<RecyclerView>(R.id.main_left_recycler_view).also {
+                it.adapter = ElementAdapter(viewModel.elements, this, viewModel.selectedElementPosition)
+            }
+        })
+
+        viewModel.topTracksList.observe(this, Observer { tracks ->
+            viewModel.onReceivedTracks(tracks)
+            rightRecyclerView = findViewById<RecyclerView>(R.id.main_right_recycler_view).also{
+                it.adapter = ItemAdapter(viewModel.currentElement?.items, this, viewModel.selectedItemPosition)
+                it.smoothScrollToPosition(0)
+            }
+        })
+
     }
 
     override fun onBackPressed() {
@@ -84,15 +93,12 @@ class MainActivity : AppCompatActivity(), ElementAdapter.ElementListener, ItemAd
         }
 
     override fun onElementSelected(element: Element, position: Int) {
-        if(position != viewModel.selectedElementPosition) {
+        if (position != viewModel.selectedElementPosition) {
             viewModel.onElementSelected(position)
             viewModel.onItemSelected(-1)
+            viewModel.fetchTopTracks(element.name)
         }
-        toolbar.title = element.name
-        rightRecyclerView?.let {
-            it.adapter = ItemAdapter(element.items, this, viewModel.selectedItemPosition)
-            it.smoothScrollToPosition(0)
-        }
+        findViewById<MaterialTextView>(R.id.main_toolbar_text_view).text = element.name.capitalize()
         drawerLayout?.closeDrawer(GravityCompat.START)
     }
 

@@ -5,7 +5,7 @@ import android.view.View
 import android.widget.LinearLayout
 import com.google.android.material.button.MaterialButton
 import com.kobeissidev.elements.R
-import com.kobeissidev.elements.element.model.Element
+import com.kobeissidev.elements.model.Element
 import com.kobeissidev.elements.util.extension.highlight
 import com.kobeissidev.elements.util.extension.unHighlight
 
@@ -17,7 +17,7 @@ class ElementView(context: Context) : LinearLayout(context) {
         View.inflate(context, R.layout.view_item, this)
     }
 
-    fun bind(element:Element)  {
+    fun bind(element: Element)  {
         itemButton = findViewById<MaterialButton>(R.id.item_button).also { it.text = element.name }
     }
 

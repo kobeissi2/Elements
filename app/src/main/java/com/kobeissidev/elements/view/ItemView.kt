@@ -7,7 +7,7 @@ import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import com.google.android.material.button.MaterialButton
 import com.kobeissidev.elements.R
-import com.kobeissidev.elements.element.model.Item
+import com.kobeissidev.elements.model.Item
 
 class ItemView(context: Context) : LinearLayout(context) {
 

@@ -3,7 +3,7 @@ package com.kobeissidev.elements.adapter
 import android.content.Context
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.kobeissidev.elements.element.model.Element
+import com.kobeissidev.elements.model.Element
 import com.kobeissidev.elements.view.ElementView
 
 internal class ElementAdapter(
