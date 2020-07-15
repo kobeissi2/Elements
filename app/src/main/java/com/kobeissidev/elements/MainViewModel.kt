@@ -93,6 +93,6 @@ class MainViewModel : ViewModel() {
      * Update the current element's items with the tracks received.
      */
     fun onReceivedTracks(track: Track) {
-        currentElement!!.items = track.tracks.track.map { Item(it.name) }
+        currentElement!!.items = track.tracks.track.map { Item(it.name, it.duration) }
     }
 }

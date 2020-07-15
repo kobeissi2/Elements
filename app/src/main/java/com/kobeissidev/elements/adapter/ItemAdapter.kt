@@ -32,12 +32,12 @@ internal class ItemAdapter(private val items: List<Item>, private val listener: 
             }
             // Once it rebinds, highlight if the position matches.
             if (highlightedPosition == position) {
-                onHighlighted()
+                onClicked()
                 // Also inform the listener of the changed element so we can fetch the associated items.
                 listener.onItemSelected(position)
             } else {
                 // Otherwise, remove the highlight.
-                onUnHighlighted()
+                onUnClicked()
             }
         }
     }
