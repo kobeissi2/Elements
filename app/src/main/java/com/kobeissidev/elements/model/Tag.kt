@@ -2,18 +2,21 @@ package com.kobeissidev.elements.model
 
 import com.squareup.moshi.Json
 
+/**
+ * Tag object from LastFM
+ */
 data class Tag(@field:Json(name = "toptags") val topTags: TopTags)
 
-data class TopTags(@field:Json(name = "@attr") val attr: Attributes, @field:Json(name = "tag") val tag: List<TagItem>)
+/**
+ * Tag object inside the Tag object
+ * Only the used properties are being de-serialized.
+ * @param tag contains all of the tags.
+ */
+data class TopTags(@field:Json(name = "tag") val tag: List<TagItem>)
 
-data class Attributes(
-    @field:Json(name = "offset") val offset: Int,
-    @field:Json(name = "num_res") val numRes: Int,
-    @field:Json(name = "total") val total: Int
-)
-
-data class TagItem(
-    @field:Json(name = "name") val name: String,
-    @field:Json(name = "count") val count: String,
-    @field:Json(name = "reach") val reach: String
-)
+/**
+ * Tag object that contains the information we need
+ * Only the used properties are being de-serialized.
+ * @param name contains name of the tag.
+ */
+data class TagItem(@field:Json(name = "name") val name: String)

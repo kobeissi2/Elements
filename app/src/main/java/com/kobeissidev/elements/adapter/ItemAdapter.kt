@@ -6,31 +6,51 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kobeissidev.elements.model.Item
 import com.kobeissidev.elements.view.ItemView
 
-internal class ItemAdapter(private val items: List<Item>?, private val listener: ItemListener, selectedPosition: Int) :
+internal class ItemAdapter(private val items: List<Item>, private val listener: ItemListener, selectedPosition: Int) :
     RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
 
+    /**
+     * Keeps track of highlighted positions.
+     */
     private var highlightedPosition = selectedPosition
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ItemViewHolder(parent.context)
 
-    override fun getItemCount() = items?.size ?: 0
+    override fun getItemCount() = items.size
 
-    override fun onBindViewHolder(holder: ItemViewHolder, position: Int) = (holder.itemView as ItemView).run {
-        bind(items?.get(position) ?: return@run)
-        setOnClickListener {
-            highlightedPosition = position
-            notifyDataSetChanged()
-        }
-        if (highlightedPosition == position) {
-            onHighlighted()
-            listener.onItemSelected(position)
-        } else {
-            onUnHighlighted()
+    override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
+        // Change the scope inside the block to the item view so we can use it's properties without making another variable.
+        (holder.itemView as ItemView).run {
+            //Bind the button inside the view to the name of the element.
+            bind(items[position])
+            // Listen for clicks and highlight the view.
+            setOnClickListener {
+                // Keep track so every other view can be unhighlighted.
+                highlightedPosition = position
+                // Inform the adapter so the UI gets refreshed.
+                notifyDataSetChanged()
+            }
+            // Once it rebinds, highlight if the position matches.
+            if (highlightedPosition == position) {
+                onHighlighted()
+                // Also inform the listener of the changed element so we can fetch the associated items.
+                listener.onItemSelected(position)
+            } else {
+                // Otherwise, remove the highlight.
+                onUnHighlighted()
+            }
         }
     }
 
-    inner class ItemViewHolder(context: Context) : RecyclerView.ViewHolder(ItemView(context))
+    /**
+     * ViewHolder for this adapter.
+     * It doesn't need to be exposed since it is only used by the adapter.
+     */
+    internal inner class ItemViewHolder(context: Context) : RecyclerView.ViewHolder(ItemView(context))
 
+    /**
+     * Interface to inform the listeners of changes.
+     */
     interface ItemListener {
         fun onItemSelected(position: Int)
     }

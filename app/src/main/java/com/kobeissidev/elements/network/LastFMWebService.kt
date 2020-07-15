@@ -7,6 +7,9 @@ import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
 
+/**
+ * Interface used by Retrofit for interacting with LastFM.
+ */
 interface LastFMWebService {
 
     private companion object {
