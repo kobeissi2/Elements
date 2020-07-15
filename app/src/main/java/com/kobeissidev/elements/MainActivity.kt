@@ -3,9 +3,6 @@ package com.kobeissidev.elements
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.MenuItem
-import android.view.View
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
@@ -13,7 +10,6 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.textview.MaterialTextView
 import com.kobeissidev.elements.adapter.ElementAdapter
 import com.kobeissidev.elements.adapter.ItemAdapter
 import com.kobeissidev.elements.element.model.Element
@@ -88,7 +84,10 @@ class MainActivity : AppCompatActivity(), ElementAdapter.ElementListener, ItemAd
         }
 
     override fun onElementSelected(element: Element, position: Int) {
-        viewModel.onElementSelected(position)
+        if(position != viewModel.selectedElementPosition) {
+            viewModel.onElementSelected(position)
+            viewModel.onItemSelected(-1)
+        }
         toolbar.title = element.name
         rightRecyclerView?.let {
             it.adapter = ItemAdapter(element.items, this, viewModel.selectedItemPosition)

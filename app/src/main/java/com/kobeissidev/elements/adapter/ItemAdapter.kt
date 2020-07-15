@@ -3,7 +3,6 @@ package com.kobeissidev.elements.adapter
 import android.content.Context
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.kobeissidev.elements.element.model.Element
 import com.kobeissidev.elements.element.model.Item
 import com.kobeissidev.elements.view.ItemView
 
