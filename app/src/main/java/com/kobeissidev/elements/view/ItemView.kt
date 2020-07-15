@@ -18,14 +18,15 @@ import com.kobeissidev.elements.util.extension.highlight
 /**
  * View for the Item.
  */
-class ItemView(context: Context) : LinearLayout(context) {
+class ItemView(context: Context, private val listener: ItemListener) : LinearLayout(context) {
 
     private var itemButton: MaterialButton? = null
     private var progressBar: ProgressBar? = null
     private var progressDuration = 0L
+    private var progress = 0
 
     private val progressAnimation by lazy {
-        ObjectAnimator.ofInt(progressBar, "progress", 0, 100).apply {
+        ObjectAnimator.ofInt(progressBar, "progress", progress, 100).apply {
             duration = progressDuration * MILLISECOND
             interpolator = DecelerateInterpolator()
             addListener(object : Animator.AnimatorListener {
@@ -55,12 +56,13 @@ class ItemView(context: Context) : LinearLayout(context) {
     /**
      * Bind the element to the button.
      */
-    fun bind(item: Item) = with(item) {
+    fun bind(item: Item, currentProgress: Int) = with(item) {
         // Initialize the item button and set the text to the name of the item.
         itemButton = findViewById<MaterialButton>(R.id.item_button).also { it.text = name }
         progressBar = findViewById<ProgressBar>(R.id.item_progress).also {
             it.max = duration.toInt()
         }
+        progress = currentProgress
         progressDuration = duration
     }
 
@@ -70,21 +72,25 @@ class ItemView(context: Context) : LinearLayout(context) {
     fun onClicked() = itemButton?.let {
         it.highlight()
         progressAnimation.start()
+        progressAnimation.addUpdateListener { listener.onProgressChanged(progressBar?.progress) }
     }
 
     /**
      * Remove the highlight on the item button and "Unplay".
      */
-    fun onUnClicked() = itemButton?.let {
-        val colorUnHighlight = ContextCompat.getColor(context, R.color.colorUnHighlight)
-        it.backgroundTintList = ColorStateList.valueOf(colorUnHighlight)
+    fun onUnClicked() {
+        itemButton?.let {
+            val colorUnHighlight = ContextCompat.getColor(context, R.color.colorUnHighlight)
+            it.backgroundTintList = ColorStateList.valueOf(colorUnHighlight)
+        }
         progressAnimation.cancel()
+        progressAnimation.removeAllUpdateListeners()
     }
 
     /**
      * Interface to inform the listeners of changes.
      */
     interface ItemListener {
-        fun onItemSelected(position: Int)
+        fun onProgressChanged(progress: Int?)
     }
 }

@@ -6,7 +6,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kobeissidev.elements.model.Item
 import com.kobeissidev.elements.view.ItemView
 
-internal class ItemAdapter(private val items: List<Item>, private val listener: ItemListener, selectedPosition: Int) :
+internal class ItemAdapter(
+    private val items: List<Item>,
+    private val listener: ItemAdapterListener,
+    selectedPosition: Int,
+    private val currentProgress: Int
+) :
     RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
 
     /**
@@ -22,7 +27,7 @@ internal class ItemAdapter(private val items: List<Item>, private val listener: 
         // Change the scope inside the block to the item view so we can use it's properties without making another variable.
         (holder.itemView as ItemView).run {
             //Bind the button inside the view to the name of the element.
-            bind(items[position])
+            bind(items[position], currentProgress)
             // Listen for clicks and highlight the view.
             setOnClickListener {
                 // Keep track so every other view can be unhighlighted.
@@ -46,12 +51,12 @@ internal class ItemAdapter(private val items: List<Item>, private val listener: 
      * ViewHolder for this adapter.
      * It doesn't need to be exposed since it is only used by the adapter.
      */
-    internal inner class ItemViewHolder(context: Context) : RecyclerView.ViewHolder(ItemView(context))
+    internal inner class ItemViewHolder(context: Context) : RecyclerView.ViewHolder(ItemView(context, listener))
 
     /**
      * Interface to inform the listeners of changes.
      */
-    interface ItemListener {
+    interface ItemAdapterListener : ItemView.ItemListener {
         fun onItemSelected(position: Int)
     }
 }

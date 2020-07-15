@@ -16,7 +16,7 @@ import com.kobeissidev.elements.adapter.ElementAdapter
 import com.kobeissidev.elements.adapter.ItemAdapter
 import com.kobeissidev.elements.model.Element
 
-class MainActivity : AppCompatActivity(), ElementAdapter.ElementListener, ItemAdapter.ItemListener {
+class MainActivity : AppCompatActivity(), ElementAdapter.ElementListener, ItemAdapter.ItemAdapterListener {
 
     /**
      * Views being used by the activity.
@@ -73,7 +73,8 @@ class MainActivity : AppCompatActivity(), ElementAdapter.ElementListener, ItemAd
             rightRecyclerView = findViewById<RecyclerView>(R.id.main_right_recycler_view).also {
                 // Also add the adapter using the new items inside our element we just created.
                 // Pass the position in case we need to highlight it.
-                it.adapter = ItemAdapter(viewModel.currentElement!!.items!!, this, viewModel.selectedItemPosition)
+                it.adapter = ItemAdapter(viewModel.currentElement!!.items!!, this, viewModel.selectedItemPosition,
+                    viewModel.currentProgress)
                 // Scroll to the top.
                 it.smoothScrollToPosition(0)
             }
@@ -145,4 +146,10 @@ class MainActivity : AppCompatActivity(), ElementAdapter.ElementListener, ItemAd
      * Caches the position of the select item.
      */
     override fun onItemSelected(position: Int) = viewModel.onItemSelected(position)
+
+    /**
+     * Handle the progress changing.
+     * Caches the progress.
+     */
+    override fun onProgressChanged(progress: Int?) = viewModel.onProgressChanged(progress)
 }

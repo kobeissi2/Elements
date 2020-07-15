@@ -1,5 +1,6 @@
 package com.kobeissidev.elements
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -55,6 +56,12 @@ class MainViewModel : ViewModel() {
         private set
 
     /**
+     * Cache the current progress so we can retain it on orientation change.
+     */
+    var currentProgress: Int = 0
+        private set
+
+    /**
      * Updated the selected element position.
      */
     fun onElementSelected(position: Int) {
@@ -94,5 +101,12 @@ class MainViewModel : ViewModel() {
      */
     fun onReceivedTracks(track: Track) {
         currentElement!!.items = track.tracks.track.map { Item(it.name, it.duration) }
+    }
+
+    /**
+     * Updated the current progress.
+     */
+    fun onProgressChanged(progress: Int?) {
+        currentProgress = progress ?: 0
     }
 }
