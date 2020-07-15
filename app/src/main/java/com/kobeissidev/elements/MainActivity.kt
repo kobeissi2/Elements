@@ -7,6 +7,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.navigation.NavigationView
@@ -15,22 +16,23 @@ import com.kobeissidev.elements.adapter.ItemAdapter
 import com.kobeissidev.elements.element.model.Element
 import com.kobeissidev.elements.element.model.Item
 
-class MainActivity : AppCompatActivity(), ElementAdapter.ElementListener {
+class MainActivity : AppCompatActivity(), ElementAdapter.ElementListener, ItemAdapter.ItemListener {
 
     private lateinit var toolbar: MaterialToolbar
+
     private var drawerLayout: DrawerLayout? = null
     private var toggle: ActionBarDrawerToggle? = null
     private var leftRecyclerView: RecyclerView? = null
     private var rightRecyclerView: RecyclerView? = null
+
+    private val isPortrait get() = resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+    private val viewModel by lazy { ViewModelProvider(this).get(MainViewModel::class.java) }
 
     //TODO: Add elements
     private val elements = listOf(
         Element("Test", listOf(Item("Item"))),
         Element("Test2", listOf(Item("Item"), Item("Item2")))
     )
-
-    private val isPortrait get() = resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
-    private val isLandscape get() = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,10 +74,13 @@ class MainActivity : AppCompatActivity(), ElementAdapter.ElementListener {
         super.onOptionsItemSelected(item)
     }
 
-    override fun onElementSelected(element: Element) {
+    override fun onElementSelected(element: Element, position: Int) {
+        viewModel.onElementSelected(position)
         toolbar.title = element.name
-        rightRecyclerView?.adapter = ItemAdapter(element.items)
+        rightRecyclerView?.adapter = ItemAdapter(element.items, this, viewModel.selectedItemPosition)
     }
+
+    override fun onItemSelected(position: Int) = viewModel.onItemSelected(position)
 
     private fun setUpPortrait() {
         if (isPortrait) {
@@ -91,8 +96,11 @@ class MainActivity : AppCompatActivity(), ElementAdapter.ElementListener {
                 }
                 setNavigationItemSelectedListener { menuItem ->
                     toolbar.title = menuItem.title
-                    elements.find { it.name == menuItem.title }?.let { rightRecyclerView?.adapter = ItemAdapter(it.items) }
-                    drawerLayout!!.closeDrawer(GravityCompat.START)
+                    elements.find { it.name == menuItem.title }?.let {
+                        rightRecyclerView?.adapter =
+                            ItemAdapter(it.items, this@MainActivity, viewModel.selectedItemPosition)
+                    }
+                    //drawerLayout!!.closeDrawer(GravityCompat.START)
                     true
                 }
                 // Redraw the navigation view
@@ -103,9 +111,9 @@ class MainActivity : AppCompatActivity(), ElementAdapter.ElementListener {
     }
 
     private fun setUpLandscape() {
-        if (isLandscape) {
+        if (isPortrait.not()) {
             leftRecyclerView = findViewById<RecyclerView>(R.id.main_left_recycler_view).also {
-                it.adapter = ElementAdapter(elements, this)
+                it.adapter = ElementAdapter(elements, this, viewModel.selectedElementPosition)
             }
         }
     }
