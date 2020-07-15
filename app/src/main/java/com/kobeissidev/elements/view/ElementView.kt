@@ -1,0 +1,33 @@
+package com.kobeissidev.elements.view
+
+import android.content.Context
+import android.content.res.ColorStateList
+import android.view.View
+import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
+import com.google.android.material.button.MaterialButton
+import com.kobeissidev.elements.R
+import com.kobeissidev.elements.element.model.Element
+
+class ElementView(context: Context) : LinearLayout(context) {
+
+    private var itemButton: MaterialButton? = null
+
+    init {
+        View.inflate(context, R.layout.view_item, this)
+    }
+
+    fun bind(element:Element)  {
+        itemButton = findViewById<MaterialButton>(R.id.item_button).also { it.text = element.name }
+    }
+
+    fun onHighlighted() {
+        val colorHighlight = ContextCompat.getColor(context, R.color.colorHighlight)
+        itemButton?.backgroundTintList = ColorStateList.valueOf(colorHighlight)
+    }
+
+    fun onUnHighlighted() {
+        val colorUnHighlight = ContextCompat.getColor(context, R.color.colorUnHighlight)
+        itemButton?.backgroundTintList = ColorStateList.valueOf(colorUnHighlight)
+    }
+}
