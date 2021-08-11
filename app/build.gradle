@@ -46,7 +46,7 @@ dependencies {
 
     //Moshi
     implementation "com.squareup.moshi:moshi-kotlin:1.12.0"
-    kapt "com.squareup.moshi:moshi-kotlin-codegen:1.8.0"
+    kapt "com.squareup.moshi:moshi-kotlin-codegen:1.12.0"
 
     //Retrofit2
     implementation "com.squareup.retrofit2:retrofit:2.7.0"
